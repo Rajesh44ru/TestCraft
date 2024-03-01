@@ -1,0 +1,14 @@
+GIt From CLone
+  git clone url
+  git status
+  git add <FileName>
+  git commit -m "Message"
+  git push origin main
+
+GIt CLone From Local
+  git init
+   git remote add orgin <link>
+  git remote -v  (To verify branch)
+  git branch  (To check Branch)
+  git branch -m main
+  git push origin main
