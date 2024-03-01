@@ -10,5 +10,18 @@ GIt CLone From Local
    git remote add orgin <link>
   git remote -v  (To verify branch)
   git branch  (To check Branch)
-  git branch -m main
-  git push origin main
+  git branch -m main  (To rename )
+  git push origin main   ( or git push -u oring main)
+
+  GLobal
+git config --global user.name "Rajesh44ru"
+git config --global user.email "rsingh.rajesh01@gmail.com"
+git config-- list
+
+#
+GIT Branch
+ git branch ( to Check Branch)
+ git branch -m main (to rename Branch)
+ git checkout <branchname> (to navigate branch)
+ git checkout -b <new branch> ( to create new branch)
+git branch -d <branchname> ( to delete branch)
