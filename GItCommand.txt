@@ -20,4 +20,8 @@
    git diff <branchname> ( tom compare commits,files and branchs)
    git merge <branchname>
 
+   #GIT Pull
+   git pull origin main
+     ( it lets you tell others about changes you pushed to a branch in a repository)
+
 
