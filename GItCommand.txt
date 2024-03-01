@@ -19,7 +19,5 @@
   Way 1
    git diff <branchname> ( tom compare commits,files and branchs)
    git merge <branchname>
-    Way 2
-     Create
 
 
