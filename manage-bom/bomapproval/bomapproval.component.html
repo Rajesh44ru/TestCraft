@@ -1,0 +1,144 @@
+<div class="main-layout">
+  <div class="modal-header">
+    <h5 class="modal-title f-w-600" id="bomApproval">Create BOM Approval</h5>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="box-content-main">
+      <form
+        [formGroup]="BOMApprovalForm"
+        (ngSubmit)="onSubmit()"
+        class="needs-validation"
+        novalidate="">
+        <!-- style="margin:10px 0px; padding:0px" -->
+        <div class="form-group row">
+          <div class="col-md-6 col-sm-12">
+            <label for="parentCategory" style="padding: 0px">
+              Approval Event
+              <span>*</span>
+            </label>
+            <select class="form-select" formControlName="mstApprovalEventId">
+              <option value="0" selected>---Select Approval Event---</option>
+              <option
+                *ngFor="let items of mstApprovalEventList"
+                [ngValue]="items.id">
+                {{ items.name }}
+              </option>
+            </select>
+            <span
+              *ngIf="
+                BOMApprovalForm.controls.mstApprovalEventId.touched &&
+                BOMApprovalForm.controls.mstApprovalEventId.errors?.required
+              "
+              class="text text-danger"
+              >Approval Event is Required .</span
+            >
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <label for="validationCustom0">
+              Approvers
+              <span></span>
+            </label>
+            <ng-multiselect-dropdown
+              [placeholder]="'Select Approvers'"
+              [(ngModel)]="userSelectedItems"
+              formControlName="assignedToIds"
+              [settings]="approversdropdownSettings"
+              [data]="userListItems"
+              (onSelect)="onUserItemSelect($event)"
+              (onDeSelect)="onUserItemDeleSelect($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-12 col-sm-12">
+            <label for="validationCustom0"
+              >Role
+              <span></span>
+            </label>
+            <ng-multiselect-dropdown
+              [placeholder]="'Select Role'"
+              [(ngModel)]="roleSelectedItems"
+              formControlName="assignedToRoleIds"
+              [settings]="dropdownSettings"
+              [data]="roleListItems"
+              (onSelect)="onRoleItemSelect($event)"
+              (onDeSelect)="onRoleItemDeleSelect($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-12 col-sm-12">
+            <label for="name"><span></span>Remarks</label>
+            <textarea
+              class="form-control"
+              formControlName="remarks"
+              required></textarea>
+            <span
+              *ngIf="
+                !BOMApprovalForm.controls.remarks.valid &&
+                BOMApprovalForm.controls.remarks.touched
+              "
+              class="error-block"
+              >Please provide Remarks
+            </span>
+          </div>
+        </div>
+
+        <div class="row form-group">
+          <div class="col-md-12 col-sm-12">
+            <label for="name">
+              Approval File
+              <span></span>
+            </label>
+            <div
+              class="custom-dropzone"
+              ngx-dropzone
+              [accept]="'*'"
+              [multiple]="false"
+              (change)="onSelect($event)">
+              <ngx-dropzone-label>
+                <i class="fa fa-cloud-upload"></i>
+                Drop here files
+              </ngx-dropzone-label>
+            </div>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col-md-12 col-sm-12">
+            <div *ngIf="files.length > 0">
+              <div *ngFor="let _file of files; let idx = index">
+                <div class="uploaded-data">
+                  <div>
+                    <span>{{ _file.name }}</span>
+                  </div>
+                  <div class="">
+                    <a href="" (click)="onDeleteFile(idx)">
+                      <i class="fa fa-times-circle"> </i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-right">
+          <button
+            type="button"
+            class="erp-btn erp-btn__light"
+            (click)="activeModal.dismiss('Cross click')">
+            Discard
+          </button>
+          <button type="submit" class="erp-btn erp-btn__green">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

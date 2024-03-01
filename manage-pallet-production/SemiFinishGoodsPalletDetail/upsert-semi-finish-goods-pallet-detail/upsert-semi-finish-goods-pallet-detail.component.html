@@ -1,0 +1,94 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="main-layout">
+      <div class="row mb-s p-4">
+        <div class="col-md-6 col-sm-12">
+          <h5>{{ formstatus }} SemiFinishGood Pallet Details</h5>
+        </div>
+        <div class="col-md-6 col-sm-12 text-right">
+          <a
+            class="erp-btn-small erp-btn-small__back"
+            
+            (click)="activeModal.close('Ok click')"
+            >
+            <span>Back</span>
+          </a>
+        </div>
+      </div>
+      <div class="">
+        <form
+          [formGroup]="upsertForm"
+          (ngSubmit)="onSubmit()"
+          class="needs-validation"
+          novalidate="">
+          <div class="box-content-main">
+            <div class="row form-group">
+              <div class="col-md-6 col-sm-12">
+                <label for="">
+                  Serial Number
+                  <span>*</span>
+                </label>
+                <input
+                placeholder="Enter Serial Number"
+                  class="form-control"
+                  formControlName="serialNumber"
+                  type="text"
+                  id="serialNumber" />
+                <div
+                  class="error-block"
+                  *ngIf="
+                    UpsertFromControl.serialNumber.invalid &&
+                    UpsertFromControl.serialNumber.touched
+                  ">
+              
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12" *ngIf="hideFields">
+                <label for="parentCategory">
+                 SemiFinish Goods
+                </label>
+                <ng-multiselect-dropdown
+                [placeholder]="'Select SemiFinish Goods'"
+                [data]="FinishGoodsDropdown"
+                formControlName="mstFinishGoodsId"
+                [settings]="dropdownSettings"
+                (onSelect)="onFinishGoodSelect($event)">
+              </ng-multiselect-dropdown>
+            </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-md-12 col-sm-12">
+                <label for=""> Remarks </label>
+                <textarea
+                placeholder="Enter Remarks"
+                  rows="4"
+                  class="w-100 form-control"
+                  formControlName="remarks"
+                  ></textarea>
+                <div
+                  class="error-block"
+                  *ngIf="
+                    UpsertFromControl.remarks.invalid &&
+                    UpsertFromControl.remarks.touched
+                  ">
+                  
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <button
+                type="button"
+                class="erp-btn erp-btn__light"
+                (click)="activeModal.close('Ok click')">
+                Discard
+              </button>
+              <button type="submit" class="erp-btn erp-btn__green">
+                {{ btnSave }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

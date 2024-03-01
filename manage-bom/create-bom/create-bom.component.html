@@ -1,0 +1,475 @@
+<style>
+  ngb-datepicker.dropdown-menu {
+    padding: 0;
+    margin-left: 12vw;
+    transform: none !important;
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="row product-adding">
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-md-12 col-sm-12">
+              <h5>Create BOM</h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="digital-add needs-validation erpcreate-form">
+            <form [formGroup]="BomForm"  class="needs-validation" novalidate="">
+              <div class="form-group row">
+                <div class="col-md-6 col-sm-12">
+                  <label for="name">
+                    Name
+                    <span>*</span>
+                  </label>
+                  <input
+                    class="form-control"
+                    placeholder="Enter Name"
+                    formControlName="name"
+                    type="text"
+                    id="name" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.name.valid &&
+                      BomForm.controls.name.touched
+                    "
+                    class="error-block"
+                    >Please Provide Name</span
+                  >
+                </div>
+
+                <div class="col-md-6 col-sm-12">
+                  <label for="ecnNumber">
+                    ECN Number
+                    <span>*</span>
+                  </label>
+                  <input
+                    class="form-control"
+                    placeholder="Enter ECN Number"
+                    formControlName="ecnNumber"
+                    type="text"
+                    id="ecnNumber" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.ecnNumber.valid &&
+                      BomForm.controls.ecnNumber.touched
+                    "
+                    class="error-block"
+                    >Please Provide EcnNumber</span
+                  >
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-md-6 col-sm-12">
+                  <label for="revisionNumber">
+                    Revision Number
+                    <span>*</span>
+                  </label>
+                  <input
+                    class="form-control"
+                    placeholder="Revision Number"
+                    formControlName="revisionNumber"
+                    type="number"
+                    id="revisionNumber" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.revisionNumber.valid &&
+                      BomForm.controls.revisionNumber.touched
+                    "
+                    class="error-block"
+                    >Please provide Revisionnumber
+                  </span>
+                </div>
+
+                <div class="col-md-6 col-sm-12">
+                  <label for="subRevisionNumber">
+                    Sub Revision Number
+                    <span>*</span>
+                  </label>
+                  <input
+                    class="form-control"
+                    placeholder="Enter Revision Number"
+                    formControlName="subRevisionNumber"
+                    type="number"
+                    id="subRevisionNumber" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.subRevisionNumber.valid &&
+                      BomForm.controls.subRevisionNumber.touched
+                    "
+                    class="error-block"
+                    >Please provide SubRevisionnumber
+                  </span>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-md-6 col-sm-12">
+                  <label for="parentCategory">
+                    Project
+                    <span>*</span>
+                  </label>
+                  <div class="erpselect">
+                    <select class="form-control" formControlName="mstProjectId">
+                      <option value="0">Select Project</option>
+                      <option
+                        *ngFor="let items of ProjectList"
+                        [ngValue]="items.id">
+                        {{ items.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <span
+                    *ngIf="
+                      BomForm.controls.mstProjectId.touched &&
+                      BomForm.controls.mstProjectId.errors?.required
+                    "
+                    class="text text-danger"
+                    >Project is Required .</span
+                  >
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <label for="effectiveFrom"> Effective From </label>
+                  <div class="input-group">
+                    <input
+                      class="form-control"
+                      placeholder="yyyy-mm-dd"
+                      name="effectiveFrom"
+                      [(ngModel)]="EffectiveFromDate"
+                      formControlName="effectiveFrom"
+                      (click)="fromDateDp.toggle()"
+                      ngbDatepicker
+                      #fromDateDp="ngbDatepicker" />
+
+                    <div class="input-group-append">
+                      <button
+                        #buttonAIC
+                        class="btn btn-secondary calendar"
+                        (click)="fromDateDp.toggle()"
+                        type="button">
+                        <span class="fa fa-calendar"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="form-group row">
+                <div class="col-md-6 col-sm-12">
+                  <label for="parentCategory"
+                    >Finish Goods
+                    <span>*</span>
+                  </label>
+                  <div class="erpselect">
+                    <select
+                      class="form-control"
+                      formControlName="mstFinishGoodsId"
+                      (change)="setValue($event.target.value)"
+                      >
+                      <option value="0">Select Finish Goods</option>
+                      <option
+                        *ngFor="let items of FinishGoodsList"
+                        [ngValue]="items.id"
+                        >
+                        {{ items.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <span
+                    *ngIf="
+                      BomForm.controls.mstFinishGoodsId.touched &&
+                      BomForm.controls.mstFinishGoodsId.errors?.required
+                    "
+                    class="text text-danger"
+                    >FinishGoods is Required .</span
+                  >
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <label for="name">
+                    Model
+                    <span>*</span>
+                  </label>
+                  <input
+                    class="form-control"
+                    placeholder="Enter Model"
+                    formControlName="model"
+                    type="text"
+                    id="model" />
+                  <!-- <span
+                    *ngIf="
+                      !BomForm.controls.model.valid &&
+                      BomForm.controls.model.touched
+                    "
+                    class="error-block"
+                    >Please Provide Model</span
+                  > -->
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-md-6 col-sm-12">
+                  <label>
+                    Part Number
+                    <span>*</span>
+                  </label>
+                  <input
+                    class="form-control"
+                    placeholder="Enter Part Number"
+                    formControlName="productPartNumber"
+                    type="text"
+                    id="productPartNumber" />
+                  <!-- <span
+                    *ngIf="
+                      !BomForm.controls.productPartNumber.valid &&
+                      BomForm.controls.productPartNumber.touched
+                    "
+                    class="error-block"
+                    >Please Partnumber
+                  </span> -->
+                </div>
+                  <div class="col-md-6 col-sm-12">
+                    <label> Is Active </label>
+                    <!-- <div class="erpselect">
+                      <select
+                        name=""
+                        id=""
+                        class="form-control"
+                        formControlName="isActive">
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                      </select>
+                    </div> -->
+                    <input
+                    class="form-control"
+                    formControlName="isActive"
+                    type="checkbox"
+                    class="checkbox_animated" />
+                  </div>
+              </div>
+
+
+              <div class="form-group row">
+                <div class="col-md-6 col-sm-12">
+                  <label for="parentCategory"
+                    >BOM Type
+                    <span>*</span>
+                  </label>
+                  <!-- (change)="ShowFG()" -->
+                  <div class="erpselect">
+                    <select
+                      class="form-control"
+                      formControlName="bomType"
+                      >
+                      <option value="0" selected>Select BOM Type</option>
+                      <option value="1">SemiFinishGoods</option>
+                      <option value="2">FInishGoods</option>
+                      </select>
+                  </div>
+                  <span
+                    *ngIf="
+                      BomForm.controls.bomType.touched &&
+                      BomForm.controls.bomType.errors?.required
+                    "
+                    class="text text-danger"
+                    >FinishGoods is Required .</span
+                  >
+                </div>
+                <!-- <div *ngIf="isShowFG" class="col-md-6 col-sm-12">
+                  <label for="parentCategory"
+                    >FinishGoods BOM
+                    <span>*</span>
+                  </label>
+                  <div class="erpselect">
+                    <select
+                      class="form-control"
+                      formControlName="fgBomId"
+                      >
+                      <option value="0">Select FG BOM</option>
+                      <option
+                        *ngFor="let items of BomData"
+                        [ngValue]="items.id"
+                        >
+                        {{ items.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div> -->
+                
+              </div>
+
+
+              
+
+
+              <!-- <ul ngbNav #nav="ngbNav" [activeId]="active" class="nav-tabs tab-coupon">
+                            <li [ngbNavItem]="1">
+                                <a ngbNavLink>Bom Items</a>
+                                <ng-template ngbNavContent>
+                                    <div class="table-responsive">
+                                        <table class="table table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th >Item Name</th>
+                                                    <th >Quantity</th>
+                                                    <th >ProductStage</th>
+                                                    <th >Unit</th>
+                                                    <th >Material</th>
+                                                    <th >Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody formArrayName="bomitemForm">
+                                                <tr *ngFor="let iqcItem of getFormControls('bomitemForm'); let idx=index;">
+                                                    <td colspan="4">
+                    
+                                                        <table class="" [formGroupName]="idx">
+                                                            <tr>
+                                                                <td >
+                                                                    <input type="text" class="form-control" formControlName="itemName"
+                                                                        placeholder="Item Name" />
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" class="form-control" formControlName="qunatity"
+                                                                        placeholder="Qunatity" />
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control" formControlName="finishGoodsProductionStageId">
+                                                                        <option value="0" selected>  ---Select ProductionStage--- </option>
+                                                                        <option *ngFor="let items of finishGoodsProductionStageList" [ngValue]="items.id">{{items.name}}</option>
+                                                                      </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control" formControlName="unitId">
+                                                                        <option value="0" selected>  ---Select Unit--- </option>
+                                                                        <option *ngFor="let items of UnitList" [ngValue]="items.id">{{items.name}}</option>
+                                                                      </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control" formControlName="mSTMaterialTypeId">
+                                                                        <option value="0" selected>  ---Select MaterialType--- </option>
+                                                                        <option *ngFor="let items of MaterialTypeList" [ngValue]="items.id">{{items.name}}</option>
+                                                                      </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control" formControlName="mSTMaterialTypeId">
+                                                                        <option value="0" selected>  ---Select BOM--- </option>
+                                                                        <option *ngFor="let items of BOMList" [ngValue]="items.id">{{items.name}}</option>
+                                                                      </select>
+                                                                </td>
+                                                                <td>
+                                                                    <i (click)="onRemoveItem(idx)" class="fa fa-times-circle" style="cursor:pointer;color: red; font-size: 29px;
+                                                                    margin-top: 2px;">
+                                                                    </i>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                    
+                                                    </td>
+                    
+                                                </tr>
+                    
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style="padding:15px">
+                                        <div class="col-lg-12" >
+                                            <button (click)="openPopUp()"  style="background: #ededed; cursor: pointer;" class="d-block mx-auto btn btn-default" >
+                                                Add BOM Item &nbsp; 
+                                                <i   class="fa fa-plus-circle" style="color: green; font-size: 20px;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="2">
+                                <a ngbNavLink> BOm Files</a>
+                                <ng-template ngbNavContent>
+                                    <div  style="border: 1px solid #ccc; border-top: none; padding: 15px;">
+                                        
+                                        <div class="col-xl-12 col-md-12">
+                                            <div class="card">
+                                                <div class="custom-dropzone" ngx-dropzone [accept]="'*'" (change)="onSelect($event)" >
+                                                    <ngx-dropzone-label>
+                                                      <i class="fa fa-cloud-upload"></i>
+                                                      Drop here files
+                                                    </ngx-dropzone-label>
+                                                  </div>
+                                                 
+                                                  <div *ngIf='files.length>0' class="m-t-10">
+                                                        <ul class="list-group" *ngFor='let _file of files; let idx=index'> 
+                                                            <li class="list-group-item">
+                                                                <div class="row">
+                                                                    <div class="col-xl-6 col-md-12">
+                                                                        {{_file.name}}
+                                                                    </div> 
+                                                                    <div class="col-xl-3 col-md-12">
+                                                                        <a *ngIf="_file.id > 0" target="_blank" href="{{baseUrlForImage}}{{_file.filePath}}"> 
+                                                                            <i class="fa fa-download" style="color: blue; font-size: 20px;">
+                                                                            </i>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="col-xl-3 col-md-12">
+                                                                        <i (click)="onDeleteFile(idx)" class="fa fa-times-circle" style="color: blue; font-size: 20px;">
+                                                                        </i>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                  </div>
+    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </li>
+                        </ul> -->
+              <!-- <div [ngbNavOutlet]="nav" class="mt-2"></div> -->
+              <div class="form-group row">
+                <div class="col-md-12 col-sm-12">
+                  <label for="name"> <span></span>Remarks </label>
+                  <textarea
+                    rows="3"
+                    class="w-100 form-control"
+                    placeholder="Type Here..."
+                    formControlName="remarks"
+                    required></textarea>
+                  <span
+                    *ngIf="
+                      !BomForm.controls.remarks.valid &&
+                      BomForm.controls.remarks.touched
+                    "
+                    class="error-block"
+                    >Please Provide Remarks</span
+                  >
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="text-right">
+            <button
+                  type="button"
+                  class="erp-btn erp-btn__light mr-2"
+                  [routerLink]="['/ManageBom/list-bom']">
+                  Discard
+                </button>
+            <button (click)="onSave()" class="erp-btn erp-btn__green">Save</button>
+          </div>
+        </div>
+        <div class="card-footer" *ngIf="inventoryStatus > 1">
+          <div class="text-right">
+            <strong>BOM have already been applied.</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

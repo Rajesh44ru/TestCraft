@@ -1,0 +1,11 @@
+.table-responsive {
+  table {
+    th:nth-child(3) {
+      left: 12rem;
+    }
+
+    td:nth-child(3) {
+      left: 12rem;
+    }
+  }
+}

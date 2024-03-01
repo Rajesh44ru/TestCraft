@@ -1,0 +1,980 @@
+<style>
+  ngb-datepicker.dropdown-menu {
+    padding: 0;
+    margin-left: 12vw;
+    transform: none !important;
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="main-layout">
+    <div class="row mb-s">
+      <div class="col-md-6 col-sm-12">
+        <h1>Edit BOM</h1>
+      </div>
+      <div class="col-md-6 col-sm-12 text-right">
+        <a class="erp-btn-small erp-btn-small__back" (click)="onDiscard()"
+          ><span>Back</span>
+        </a>
+      </div>
+    </div>
+    <div class="box-content-main">
+      <h5>{{ this.BomForm.getRawValue().name }}</h5>
+
+      <div class="card-body tab2-card">
+        <ul
+          ngbNav
+          #nav="ngbNav"
+          class="nav-tabs tab-coupon"
+          (tabChange)="tabchange($event)">
+          <li [ngbNavItem]="1">
+            <a
+              ngbNavLink
+              *ngIf="
+                this.mps.manageDataPermission([
+                  dataPermission.PRODUCTION_BOMS_TAB_DETAILS
+                ])
+              "
+              >Details</a
+            >
+            <ng-template ngbNavContent>
+              <div class="">
+                <div>
+                  <div class="needs-validation">
+                    <form
+                      [formGroup]="BomForm"
+                      class="needs-validation"
+                      novalidate="">
+                      <fieldset
+                        [disabled]="
+                          mst_BOMStatus == 'Waiting For Approval' ||
+                          !isCreatedUser
+                        ">
+                        <div class="form-group row">
+                          <div class="col-md-6 col-sm-12">
+                            <label for="name">
+                              Name
+                              <span>*</span>
+                            </label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter Name"
+                              formControlName="name"
+                              type="text"
+                              id="name" />
+                            <span
+                              *ngIf="
+                                !BomForm.controls.name.valid &&
+                                BomForm.controls.name.touched
+                              "
+                              class="error-block"
+                              >Please Provide Name</span
+                            >
+                          </div>
+
+                          <div class="col-md-6 col-sm-12">
+                            <label for="ecnNumber">
+                              ECN Number
+                              <span>*</span>
+                            </label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter ECN Number"
+                              formControlName="ecnNumber"
+                              [readonly]="mst_BOMStatus != 'Draft'"
+                              type="text"
+                              id="ecnNumber" />
+                            <span
+                              *ngIf="
+                                !BomForm.controls.ecnNumber.valid &&
+                                BomForm.controls.ecnNumber.touched
+                              "
+                              class="error-block"
+                              >Please Provide EcnNumber</span
+                            >
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <div class="col-md-6 col-sm-12">
+                            <label for="revisionNumber">
+                              Revision Number
+                              <span>*</span>
+                            </label>
+                            <input
+                              class="form-control"
+                              placeholder="Revision Number"
+                              formControlName="revisionNumber"
+                              [readonly]="mst_BOMStatus != 'Draft'"
+                              type="number"
+                              id="revisionNumber" />
+                            <span
+                              *ngIf="
+                                !BomForm.controls.revisionNumber.valid &&
+                                BomForm.controls.revisionNumber.touched
+                              "
+                              class="error-block"
+                              >Please provide Revision Number
+                            </span>
+                          </div>
+
+                          <div class="col-md-6 col-sm-12">
+                            <label for="subRevisionNumber">
+                              Sub Revision Number
+                              <span>*</span>
+                            </label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter Revision Number"
+                              formControlName="subRevisionNumber"
+                              [readonly]="mst_BOMStatus != 'Draft'"
+                              type="number"
+                              id="subRevisionNumber" />
+                            <span
+                              *ngIf="
+                                !BomForm.controls.subRevisionNumber.valid &&
+                                BomForm.controls.subRevisionNumber.touched
+                              "
+                              class="error-block"
+                              >Please provide Sub Revision Number
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <div class="col-md-6 col-sm-12">
+                            <label for="parentCategory">
+                              Project
+                              <span>*</span>
+                            </label>
+                            <div class="erpselect">
+                              <select
+                                class="form-control"
+                                formControlName="mstProjectId">
+                                <option value="0">Select Project</option>
+                                <option
+                                  *ngFor="let items of ProjectList"
+                                  [ngValue]="items.id">
+                                  {{ items.name }}
+                                </option>
+                              </select>
+                            </div>
+                            <span
+                              *ngIf="
+                                BomForm.controls.mstProjectId.touched &&
+                                BomForm.controls.mstProjectId.errors?.required
+                              "
+                              class="text text-danger"
+                              >Project is Required .</span
+                            >
+                          </div>
+                          <div class="col-md-6 col-sm-12">
+                            <label for="effectiveFrom"> Effective From </label>
+                            <div class="erp-date">
+                              <input
+                                class="form-control"
+                                placeholder="yyyy-mm-dd"
+                                name="effectiveFrom"
+                                [(ngModel)]="EffectiveFromDate"
+                                formControlName="effectiveFrom"
+                                (click)="fromDateDp.toggle()"
+                                ngbDatepicker
+                                #fromDateDp="ngbDatepicker" />
+
+                              <!-- <div class="input-group-append"> -->
+                              <!-- <button -->
+                              <!-- #buttonAIC -->
+                              <!-- class="btn btn-secondary calendar" -->
+                              <!-- (click)="fromDateDp.toggle()" -->
+                              <!-- type="button"> -->
+                              <!-- <span class="fa fa-calendar"></span> -->
+                              <!-- </button> -->
+                              <!-- </div> -->
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <div class="col-md-6 col-sm-12">
+                            <label for="parentCategory"
+                              >Finish Goods
+                              <span>*</span>
+                            </label>
+                            <div class="erpselect">
+                              <select
+                                class="form-control"
+                                formControlName="mstFinishGoodsId"
+                                (change)="setValue($event.target.value)">
+                                <option value="0">Select Finish Goods</option>
+                                <option
+                                  *ngFor="let items of FinishGoodsList"
+                                  [ngValue]="items.id">
+                                  {{ items.name }}
+                                </option>
+                              </select>
+                            </div>
+                            <span
+                              *ngIf="
+                                BomForm.controls.mstFinishGoodsId.touched &&
+                                BomForm.controls.mstFinishGoodsId.errors
+                                  ?.required
+                              "
+                              class="text text-danger"
+                              >Finish Goods is Required .</span
+                            >
+                          </div>
+                          <div class="col-md-6 col-sm-12">
+                            <label for="name">
+                              Model
+                              <span>*</span>
+                            </label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter Model"
+                              formControlName="model"
+                              [readonly]="mst_BOMStatus == 'Draft'"
+                              type="text"
+                              id="model" />
+                            <!-- <span
+                              *ngIf="
+                                !BomForm.controls.model.valid &&
+                                BomForm.controls.model.touched
+                              "
+                              class="error-block"
+                              >Please Provide Model</span -->
+                            <!-- > -->
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <div class="col-md-6 col-sm-12">
+                            <label>
+                              Part Number
+                              <span>*</span>
+                            </label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter Part Number"
+                              formControlName="productPartNumber"
+                              [readonly]="mst_BOMStatus == 'Draft'"
+                              type="text"
+                              id="productPartNumber" />
+                            <!-- <span
+                              *ngIf="
+                                !BomForm.controls.productPartNumber.valid &&
+                                BomForm.controls.productPartNumber.touched
+                              "
+                              class="error-block"
+                              >Please Partnumber
+                            </span> -->
+                          </div>
+                          <div class="col-md-6 col-sm-12">
+                            <label> Is Active </label>
+                            <!-- <div class="erpselect">
+                              <select
+                                name=""
+                                id=""
+                                class="form-control"
+                                formControlName="isActive">
+                                <option value="true">True</option>
+                                <option value="false">False</option>
+                              </select>
+                            </div> -->
+                            <input
+                              class="form-control"
+                              formControlName="isActive"
+                              [readonly]="mst_BOMStatus == 'Draft'"
+                              type="checkbox"
+                              class="checkbox_animated" />
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-md-6 col-sm-12">
+                            <label for="parentCategory"
+                              >BOM Type
+                              <span>*</span>
+                            </label>
+
+                            <!-- (change)="ShowFG()" -->
+                            <div class="erpselect">
+                              <select
+                                class="form-control"
+                                formControlName="bomType">
+                                <option value="0" selected>
+                                  Select BOM Type
+                                </option>
+                                <option value="1">SemiFinishGoods</option>
+                                <option value="2">FInishGoods</option>
+                              </select>
+                            </div>
+                            <span
+                              *ngIf="
+                                BomForm.controls.bomType.touched &&
+                                BomForm.controls.bomType.errors?.required
+                              "
+                              class="text text-danger"
+                              >FinishGoods is Required .</span
+                            >
+                          </div>
+                          <!-- <div *ngIf="isShowFG" class="col-md-6 col-sm-12">
+                            <label for="parentCategory"
+                              >FinishGoods BOM
+                              <span>*</span>
+                            </label>
+                            <div class="erpselect">
+                              <select
+                                class="form-control"
+                                formControlName="fgBomId"
+                                >
+                                <option value="0">Select FG BOM</option>
+                                <option
+                                  *ngFor="let items of BomData"
+                                  [ngValue]="items.id"
+                                  >
+                                  {{ items.name }}
+                                </option>
+                              </select>
+                            </div>
+                          </div> -->
+                        </div>
+
+                        <!-- <div class="form-group row">
+                        <div class="col-md-12 col-sm-12">
+                          <label for="name"> <span></span>Remarks </label>
+                          <textarea
+                            rows="3"
+                            class="w-100 form-control"
+                            placeholder="Type Here..."
+                            formControlName="remarks"
+                            required></textarea>
+                          <span
+                            *ngIf="
+                              !BomForm.controls.remarks.valid &&
+                              BomForm.controls.remarks.touched
+                            "
+                            class="error-block"
+                            >Please Provide Remarks</span
+                          >
+                        </div>
+                      </div> -->
+                        <div class="card-body tab2-card">
+                          <ul
+                            ngbNav
+                            #nav="ngbNav"
+                            [activeId]="active"
+                            class="nav-tabs">
+                            <li [ngbNavItem]="1">
+                              <a ngbNavLink>BOM Items</a>
+                              <ng-template ngbNavContent>
+                                <div
+                                  class="row"
+                                  *ngIf="
+                                    isCreatedUser && mst_BOMStatus == 'Draft'
+                                  ">
+                                  <div class="col-md-12 text-right">
+                                    <button
+                                      (click)="openPopUp()"
+                                      class="btn btn-success">
+                                      Add BOM Item &nbsp;
+                                      <i class="fa fa-plus-circle"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                                <div formArrayName="bomitemForm" class="mt-3">
+                                  <div
+                                    class="card p-3"
+                                    *ngFor="
+                                      let iqcItem of getFormControls(
+                                        'bomitemForm'
+                                      );
+                                      let idx = index
+                                    "
+                                    [formGroupName]="idx">
+                                    <div class="form-group row">
+                                      <div class="col-md-11"></div>
+                                      <div
+                                        class="col-md-1 col-sm-12 float-right">
+                                        <!--  <label>Action</label> -->
+                                        <div
+                                          valign="middle"
+                                          align="center"
+                                          class="action-btn">
+                                          <a
+                                            *ngIf="
+                                              isCreatedUser &&
+                                              mst_BOMStatus == 'Draft'
+                                            "
+                                            (click)="
+                                              onRemoveItem(
+                                                idx,
+                                                iqcItem.getRawValue()
+                                              )
+                                            ">
+                                            <i class="fa fa-times-circle"></i>
+                                          </a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="form-group row">
+                                      <div class="col-md-3 col-sm-12">
+                                        <label for="name"> Part Number </label>
+                                        <input
+                                          type="text"
+                                          class="form-control"
+                                          formControlName="partNumber"
+                                          [disabled]="!isCreatedUser"
+                                          placeholder="Part Number" />
+                                      </div>
+                                      <div class="col-md-2 col-sm-12">
+                                        <label> Quantity </label>
+                                        <input
+                                          type="number"
+                                          class="form-control"
+                                          formControlName="qunatity"
+                                          [disabled]="
+                                            !isCreatedUser ||
+                                            mst_BOMStatus != 'Draft'
+                                          "
+                                          placeholder="Qty" />
+                                      </div>
+
+                                      <div class="col-md-2 col-sm-12 erpselect">
+                                        <label>
+                                          Unit
+                                          <span>*</span>
+                                        </label>
+                                        <select
+                                          class="form-control"
+                                          [disabled]="
+                                            !isCreatedUser ||
+                                            mst_BOMStatus != 'Draft'
+                                          "
+                                          formControlName="unitId">
+                                          <option value="0" selected>
+                                            Select
+                                          </option>
+                                          <option
+                                            [disabled]="true"
+                                            *ngFor="let items of UnitList"
+                                            [ngValue]="items.id">
+                                            {{ items.name }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div class="col-md-2 col-sm-12">
+                                        <label for="name"> Material </label>
+                                        <select
+                                          class="form-select"
+                                          formControlName="mSTMaterialTypeId"
+                                          [disabled]="
+                                            !isCreatedUser ||
+                                            mst_BOMStatus != 'Draft'
+                                          ">
+                                          <option value="0" selected>
+                                            Select
+                                          </option>
+                                          <option
+                                            *ngFor="
+                                              let items of MaterialTypeList
+                                            "
+                                            [ngValue]="items.id">
+                                            {{ items.name }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div class="col-md-3 col-sm-12">
+                                        <label> Supplier Name </label>
+                                        <input
+                                          type="text"
+                                          class="form-control"
+                                          formControlName="supplierName"
+                                          [disabled]="!isCreatedUser" />
+                                      </div>
+                                    </div>
+                                    <div class="form-group row">
+                                      <div class="col-md-3 col-sm-12">
+                                        <label for="name">
+                                          Production Stage
+                                        </label>
+                                        <select
+                                          class="form-select"
+                                          formControlName="finishGoodsProductionStageId"
+                                          [disabled]="
+                                            !isCreatedUser ||
+                                            mst_BOMStatus != 'Draft'
+                                          ">
+                                          <option value="0" selected>
+                                            Select
+                                          </option>
+                                          <option
+                                            *ngFor="
+                                              let items of productionstageDDL
+                                            "
+                                            [ngValue]="items.id">
+                                            {{ items.name }}
+                                          </option>
+                                        </select>
+                                      </div>
+
+                                      <div class="col-md-3 col-sm-12">
+                                        <label for="ecnNumber">
+                                          Scan at production stage
+                                        </label>
+                                        <select
+                                          class="form-select"
+                                          formControlName="scanFinishGoodsProductionStageId"
+                                          [disabled]="
+                                            !isCreatedUser ||
+                                            mst_BOMStatus != 'Draft'
+                                          ">
+                                          <option value="0" selected>
+                                            Select
+                                          </option>
+                                          <option
+                                            *ngFor="
+                                              let items of productionstageDDL
+                                            "
+                                            [ngValue]="items.id">
+                                            {{ items.name }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div class="col-md-2 col-sm-12">
+                                        <label for="ecnNumber">
+                                          Scanable
+                                        </label>
+                                        <input
+                                          class="checkbox_animated mr-0 text-center"
+                                          formControlName="isScanable"
+                                          type="checkbox"
+                                          class="checkbox_animated" />
+                                      </div>
+                                      <div class="col-md-4 col-sm-12">
+                                        <label for="name"> Description </label>
+                                        <textarea
+                                          type="text"
+                                          class="form-control"
+                                          style="
+                                            /* width: 370px; */ /* height: 60px !important; 
+                           */
+                                          "
+                                          formControlName="description"
+                                          [disabled]="
+                                            !isCreatedUser ||
+                                            mst_BOMStatus != 'Draft'
+                                          "
+                                          placeholder="Enter Description"></textarea>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- <div class="mb-s"> -->
+                                <!-- <div class="table-responsive"> -->
+                                <!-- <table -->
+                                <!-- class="table-data table-last-child" -->
+                                <!-- width="100%"> -->
+                                <!-- <tr> -->
+                                <!-- <th>Part Number</th> -->
+                                <!-- <th>Description</th> -->
+                                <!-- <th>Supplier Name</th> -->
+                                <!-- <th>Quantity</th> -->
+                                <!-- <th>Unit</th> -->
+                                <!-- <th>Material</th> -->
+                                <!-- <th>Production Stage</th> -->
+                                <!-- <th>Scanable</th> -->
+                                <!-- <th>Scan at Production Stage</th> -->
+                                <!-- <th align="center">Action</th> -->
+                                <!-- </tr> -->
+                                <!-- <tbody formArrayName="bomitemForm"> -->
+                                <!-- <tr -->
+                                <!-- *ngFor=" -->
+                                <!-- let iqcItem of getFormControls( -->
+                                <!-- 'bomitemForm' -->
+                                <!-- ); -->
+                                <!-- let idx = index -->
+                                <!-- " -->
+                                <!-- [formGroupName]="idx"> -->
+                                <!-- <td> -->
+                                <!-- <input -->
+                                <!-- type="text" -->
+                                <!-- class="form-control" -->
+                                <!-- formControlName="partNumber" -->
+                                <!-- [disabled]="!isCreatedUser" -->
+                                <!-- placeholder="Part Number" /> -->
+                                <!-- </td> -->
+                                <!-- <td> -->
+                                <!-- <textarea -->
+                                <!-- type="text" -->
+                                <!-- class="form-control" -->
+                                <!-- style=" -->
+                                <!-- width: 370px; /* height: 60px !important;  -->
+                                <!-- /* */ */ -->
+                                <!-- /* " */ -->
+                                <!-- formControlName="description" -->
+                                <!-- [disabled]=" -->
+                                <!-- !isCreatedUser || -->
+                                <!-- mst_BOMStatus != 'Draft' -->
+                                <!-- " -->
+                                <!-- placeholder="Enter Description"></textarea> -->
+                                <!-- </td> -->
+                                <!-- <td> -->
+                                <!-- <textarea -->
+                                <!-- type="text" -->
+                                <!-- class="form-control" -->
+                                <!-- style=" -->
+                                <!-- width: 370px; /* height: 60px !important;  -->
+                                <!-- /* */ /* " */ -->
+                                <!-- formControlName="supplierName"></textarea> -->
+                                <!-- </td> -->
+                                <!-- <td> -->
+                                <!-- <input -->
+                                <!-- type="number" -->
+                                <!-- class="form-control" -->
+                                <!-- formControlName="qunatity" -->
+                                <!-- [disabled]=" -->
+                                <!-- !isCreatedUser || -->
+                                <!-- mst_BOMStatus != 'Draft' -->
+                                <!-- " -->
+                                <!-- placeholder="Qty" /> -->
+                                <!-- </td> -->
+                                <!-- <td> -->
+                                <!-- <div class="erpselect"> -->
+                                <!-- <select -->
+                                <!-- class="form-control" -->
+                                <!-- style="width: 70px" -->
+                                <!-- [disabled]=" -->
+                                <!-- !isCreatedUser || -->
+                                <!-- mst_BOMStatus != 'Draft' -->
+                                <!-- " -->
+                                <!-- formControlName="unitId"> -->
+                                <!-- <option value="0" selected> -->
+                                <!-- Select -->
+                                <!-- </option> -->
+                                <!-- <option -->
+                                <!-- [disabled]="true" -->
+                                <!-- *ngFor="let items of UnitList" -->
+                                <!-- [ngValue]="items.id"> -->
+                                <!-- {{ items.name }} -->
+                                <!-- </option> -->
+                                <!-- </select> -->
+                                <!-- </div> -->
+                                <!-- </td> -->
+                                <!-- <td> -->
+                                <!-- <div> -->
+                                <!-- <select -->
+                                <!-- class="form-select" -->
+                                <!-- style="width: 190px" -->
+                                <!-- formControlName="mSTMaterialTypeId" -->
+                                <!-- [disabled]=" -->
+                                <!-- !isCreatedUser || -->
+                                <!-- mst_BOMStatus != 'Draft' -->
+                                <!-- "> -->
+                                <!-- <option value="0" selected> -->
+                                <!-- Select -->
+                                <!-- </option> -->
+                                <!-- <option -->
+                                <!-- *ngFor=" -->
+                                <!-- let items of MaterialTypeList -->
+                                <!-- " -->
+                                <!-- [ngValue]="items.id"> -->
+                                <!-- {{ items.name }} -->
+                                <!-- </option> -->
+                                <!-- </select> -->
+                                <!-- </div> -->
+                                <!-- </td> -->
+                                <!-- <td> -->
+                                <!-- <div class=""> -->
+                                <!-- <select -->
+                                <!-- class="form-select" -->
+                                <!-- style="width: 190px" -->
+                                <!-- formControlName="finishGoodsProductionStageId" -->
+                                <!-- [disabled]=" -->
+                                <!-- !isCreatedUser || -->
+                                <!-- mst_BOMStatus != 'Draft' -->
+                                <!-- "> -->
+                                <!-- <option value="0" selected> -->
+                                <!-- Select -->
+                                <!-- </option> -->
+                                <!-- <option -->
+                                <!-- *ngFor=" -->
+                                <!-- let items of productionstageDDL -->
+                                <!-- " -->
+                                <!-- [ngValue]="items.id"> -->
+                                <!-- {{ items.name }} -->
+                                <!-- </option> -->
+                                <!-- </select> -->
+                                <!-- </div> -->
+                                <!-- </td> -->
+                                <!--  -->
+                                <!-- <td class="text-center"> -->
+                                <!-- <input -->
+                                <!-- class="checkbox_animated mr-0" -->
+                                <!-- formControlName="isScanable" -->
+                                <!-- type="checkbox" -->
+                                <!-- class="checkbox_animated" /> -->
+                                <!-- </td> -->
+                                <!-- <td> -->
+                                <!-- <div class=""> -->
+                                <!-- <select -->
+                                <!-- class="form-select" -->
+                                <!-- style="width: 190px" -->
+                                <!-- formControlName="scanFinishGoodsProductionStageId" -->
+                                <!-- [disabled]=" -->
+                                <!-- !isCreatedUser || -->
+                                <!-- mst_BOMStatus != 'Draft' -->
+                                <!-- "> -->
+                                <!-- <option value="0" selected> -->
+                                <!-- Select -->
+                                <!-- </option> -->
+                                <!-- <option -->
+                                <!-- *ngFor=" -->
+                                <!-- let items of productionstageDDL -->
+                                <!-- " -->
+                                <!-- [ngValue]="items.id"> -->
+                                <!-- {{ items.name }} -->
+                                <!-- </option> -->
+                                <!-- </select> -->
+                                <!-- </div> -->
+                                <!-- </td> -->
+                                <!-- <td valign="middle" align="center"> -->
+                                <!-- <div class="action-btn"> -->
+                                <!-- <a -->
+                                <!-- *ngIf=" -->
+                                <!-- isCreatedUser && -->
+                                <!-- mst_BOMStatus == 'Draft' -->
+                                <!-- " -->
+                                <!-- (click)=" -->
+                                <!-- onRemoveItem( -->
+                                <!-- idx, -->
+                                <!-- iqcItem.getRawValue() -->
+                                <!-- ) -->
+                                <!-- "> -->
+                                <!-- <i -->
+                                <!-- class="fa fa-times-circle"></i> -->
+                                <!-- </a> -->
+                                <!-- </div> -->
+                                <!-- </td> -->
+                                <!-- </tr> -->
+                                <!-- </tbody> -->
+                                <!-- </table> -->
+                                <!-- </div> -->
+                                <!-- </div> -->
+                              </ng-template>
+                            </li>
+                            <li [ngbNavItem]="2">
+                              <a ngbNavLink> BOM Files</a>
+                              <ng-template ngbNavContent>
+                                <div class="card">
+                                  <div
+                                    class="custom-dropzone"
+                                    ngx-dropzone
+                                    [accept]="'*'"
+                                    (change)="onSelect($event)">
+                                    <ngx-dropzone-label>
+                                      <i class="fa fa-cloud-upload"></i>
+                                      Drop here files
+                                    </ngx-dropzone-label>
+                                  </div>
+                                  <div *ngIf="files.length > 0" class="m-t-10">
+                                    <ul
+                                      class="list-group"
+                                      *ngFor="
+                                        let _file of files;
+                                        let idx = index
+                                      ">
+                                      <li class="list-group-item">
+                                        <div class="row">
+                                          <div class="col-xl-6 col-md-12">
+                                            <span>{{ _file.fileName }}</span>
+                                            <span>{{ _file.name }}</span>
+                                          </div>
+                                          <div class="col-xl-3 col-md-12">
+                                            <a
+                                              *ngIf="_file.id > 0"
+                                              target="_blank"
+                                              href="{{ baseUrlForImage }}{{
+                                                _file.filePath
+                                              }}">
+                                              <i class="fa fa-download"> </i>
+                                            </a>
+                                          </div>
+                                          <div
+                                            class="col-xl-3 col-md-12 text-right">
+                                            <i
+                                              (click)="onDeleteFile(idx)"
+                                              class="fa fa-times-circle">
+                                            </i>
+                                          </div>
+                                        </div>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </ng-template>
+                            </li>
+                          </ul>
+                          <div [ngbNavOutlet]="nav"></div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-md-12 col-sm-12">
+                            <label for="name">
+                              <span></span>
+                              Remarks
+                            </label>
+                            <textarea
+                              rows="3"
+                              class="w-100 form-control"
+                              formControlName="remarks"
+                              required></textarea>
+                            <span
+                              *ngIf="
+                                !BomForm.controls.remarks.valid &&
+                                BomForm.controls.remarks.touched
+                              "
+                              class="error-block"
+                              >Please Provide Remarks</span
+                            >
+                          </div>
+                        </div>
+                      </fieldset>
+                    </form>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-md-12 text-right" *ngIf="isCreatedUser">
+                    <button
+                      *ngIf="mst_BOMStatus != 'Accepted'"
+                      (click)="OnSaveForApproval()"
+                      class="erp-btn erp-btn__accept">
+                      <span>Send For Approval</span>
+                    </button>
+                    <button
+                      *ngIf="mst_BOMStatus == 'Draft'"
+                      (click)="onSaveDraft()"
+                      class="erp-btn erp-btn__green">
+                      <span>Save Draft</span>
+                    </button>
+                    <button
+                      *ngIf="mst_BOMStatus == 'Accepted'"
+                      (click)="finalSave()"
+                      class="erp-btn erp-btn__green">
+                      <span>Update Stage</span>
+                    </button>
+                    <button
+                      *ngIf="mst_BOMStatus == 'Accepted' && IsCurrentVersion"
+                      (click)="CreateVersion()"
+                      class="erp-btn erp-btn__green">
+                      <span>Create Version</span>
+                    </button>
+                    <button
+                      (click)="onDiscard()"
+                      class="erp-btn erp-btn__reject">
+                      <span>Discard</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="clear-fix"></div>
+                <div class="row form-group">
+                  <div class="col-md-12 col-sm-12">
+                    <app-bom-approval-log-history
+                      #reFreshData></app-bom-approval-log-history>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <a
+              ngbNavLink
+              *ngIf="
+                this.mps.manageDataPermission([
+                  dataPermission.PRODUCTION_BOMS_TAB_BOM_CHANGE_LOG
+                ])
+              "
+              >BOM Change Log</a
+            >
+            <ng-template ngbNavContent>
+              <div class="main-layout">
+                <div class="row mb-s">
+                  <!-- <div class="col-md-12">
+                    <h1>BOM Change Log</h1>
+                  </div> -->
+                </div>
+                <div class="box-content-main">
+                  <div class="table-responsive">
+                    <table class="table-data table-last-child">
+                      <thead>
+                        <tr>
+                          <th *ngFor="let c of columns">
+                            {{ c.title }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody
+                        *ngIf="bomchangeloglist?.length; else no_data_temp">
+                        <tr
+                          *ngFor="let item of bomchangeloglist; let i = index">
+                          <td>
+                            {{ item.model }}
+                          </td>
+                          <td>
+                            {{ item.itemName }}
+                          </td>
+                          <td>
+                            {{ item.productPartNumber }}
+                          </td>
+                          <td>
+                            {{ item.newQuantity }}
+                          </td>
+                          <td>
+                            {{ item.oldQuantity }}
+                          </td>
+                          <td>
+                            {{ item.remarks }}
+                          </td>
+                          <td>
+                            {{ item.action }}
+                          </td>
+                          <td>
+                            {{ item.createdOn | date : "dd/MM/yyyy hh:mm a" }}
+                          </td>
+                        </tr>
+                      </tbody>
+                      <ng-template #no_data_temp>
+                        <tbody>
+                          <td colspan="6" class="no-data">
+                            {{ this.noDataFound }}
+                          </td>
+                        </tbody>
+                      </ng-template>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3">
+            <a
+              ngbNavLink
+              *ngIf="
+                this.mps.manageDataPermission([
+                  dataPermission.PRODUCTION_BOMS_TAB_DETAILS
+                ])
+              "
+              >Production Stage</a
+            >
+            <ng-template ngbNavContent>
+              <div class="">
+                <app-finish-goods-production-stage
+                  [FinishGoodsId]="FiniGoodsId"
+                  [bomID]="bomID"></app-finish-goods-production-stage>
+              </div>
+            </ng-template>
+          </li>
+        </ul>
+        <div [ngbNavOutlet]="nav"></div>
+      </div>
+    </div>
+  </div>
+</div>

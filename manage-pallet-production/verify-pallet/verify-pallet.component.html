@@ -1,0 +1,125 @@
+<div class="container-fluid">
+  <div class="main-layout">
+    <div class="row mb-s">
+      <div class="col-md-12 col-sm-12">
+        <div class="row justify-content-end">
+          <!-- <div class="col-md-3 pr-0">
+                <div class="header-with-input">
+                  <h5 class="heading-fix">POQC Task</h5>
+                  
+                </div>
+              </div> -->
+        </div>
+        <!-- *ngIf="!isOpen && !isAllPOQCCompleted" -->
+        <div
+          class="col-12 row justify-content-start box-content-main"
+          *ngIf="!isPalletScanned && !isOpen">
+          <label for="palletIDNumber" class="pallet-label m-0 p-0">Scan</label>
+
+          <div class="col-md-5 col-sm-12 pl-0">
+            <input
+              class="form-control w-100"
+              placeholder="PalletID Number"
+              id="palletIDNumber"
+              type="text"
+              required=""
+              (keyup.enter)="scanpallet()"
+              [(ngModel)]="palletIDNumber" />
+          </div>
+          <div class="col-md-1 col-sm-12 pl-0">
+            <button class="erp-btn erp-btn__green" (click)="scanpallet()">
+              Submit
+            </button>
+          </div>
+        </div>
+        <div
+          class="col-12 row justify-content-start box-content-main"
+          *ngIf="
+            isPalletScanned &&
+            isOpen &&
+            dataList.serialNumberIsverifiedDTO.length > 0 &&
+            !dataList.isVerified
+          ">
+          <label for="serialNumber" class="pallet-label">Scan</label>
+          <div class="col-md-5 col-sm-12 pl-0">
+            <input
+              class="form-control w-100"
+              placeholder="Serial Number"
+              id="serialNumber"
+              type="text"
+              required=""
+              (keyup.enter)="verifySerialNumber()"
+              [(ngModel)]="serialNumber" />
+          </div>
+          <div class="col-md-1 col-sm-12 pl-0">
+            <button
+              class="erp-btn erp-btn__green"
+              (click)="verifySerialNumber()">
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="row box-content-main"
+      *ngIf="isPalletScanned && isOpen && dataList">
+      <div class="row pallet-box">
+        <div class="col-md-6">
+          <div
+            [class]="
+              dataList?.isScan == true
+                ? ' boxcss success'
+                : dataList?.isScan == false
+                ? 'boxcss fail'
+                : 'boxcss'
+            ">
+            <h5 for="palletId">Pallet ID:</h5>
+            <p class="box-number">{{ dataList?.palletId }}</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div
+            *ngFor="
+              let item of dataList.serialNumberIsverifiedDTO;
+              let i = index
+            ">
+            <div
+              [class]="
+                item.isVerified == true
+                  ? ' boxcss success'
+                  : item.isVerified == false
+                  ? 'boxcss fail'
+                  : 'boxcss'
+              ">
+              <h5 for="palletId">Serial Number {{ i + 1 }}:</h5>
+              <p class="box-number">{{ item.serialNumber }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-end">
+        <button
+          *ngIf="isPalletScanned && isOpen"
+          class="erp-btn erp-btn__light"
+          (click)="closeScanpallet()">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- <div *ngIf="isPalletScanned && isOpen">
+      <div class="row d-flex justify-content-center mt-5">
+        <div class="col-md-3 col-sm-12 pl-0">
+          <div class="row">
+            <div class="col-4">
+              <button *ngIf="isPalletScanned && isOpen" class="btn btn-danger" (click)="closeScanpallet()">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+  </div>
+</div>

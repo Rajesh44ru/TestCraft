@@ -1,0 +1,24 @@
+<h1 class="mb-s">Print Pallet</h1>
+<div class="box-content-main">
+  <div class="row form-group">
+    <div class="col-md-12 col-sm-12">
+      <div class="d-flex align-items-start">
+        <div *ngIf="renderpallet" class="mr-3 col-md-6">
+          <div [innerHTML]="HtmlStringForPallet"></div>
+        </div>
+        <div class="col-md-6" *ngIf="HtmlStringForSerial.length > 0">
+          <div *ngFor="let item of HtmlStringForSerial">
+            <div [innerHTML]="item"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="col-md-12">
+      <button (click)="printALL()" class="erp-btn-small erp-btn-small__print">
+        <span>Print</span>
+      </button>
+    </div>
+  </div>
+</div>

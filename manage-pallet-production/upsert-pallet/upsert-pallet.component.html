@@ -1,0 +1,229 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+  <div class="main-layout">
+    <div class="row mb-s">
+      <div class="col-lg-8 col-sm-12">
+        <h1>{{ formstatus }} Pallet</h1>
+      </div>
+      <div class="col-lg-4 col-sm-12 text-right">
+        <a
+          *ngIf="
+            this.mps.manageDataPermission([
+              dataPermission.PRODUCTION_LIST_PALLET_SEARCH
+            ])
+          "
+          class="erp-btn-small erp-btn-small__back"
+          href="#"
+          [routerLink]="['/managepallet/ListPallet']">
+          <span>Back</span>
+        </a>
+      </div>
+    </div>
+    <div class="card-body tab2-card box-content-main">
+      <ul
+        ngbNav
+        #nav="ngbNav"
+        [destroyOnHide]="false"
+        class="nav-tabs tab-coupon">
+        <li [ngbNavItem]="1">
+          <a ngbNavLink> Details </a>
+          <ng-template ngbNavContent>
+            <form
+              [formGroup]="upsertForm"
+              (ngSubmit)="onSubmit()"
+              class="needs-validation"
+              novalidate="">
+              <div>
+                <div class="row form-group">
+                  <div class="col-md-6 col-sm-12">
+                    <label for="parentCategory"> Pallet Type </label>
+                    <ng-multiselect-dropdown
+                    [placeholder]="'Select Pallet'"
+                    [settings]="PalletdropdownSettings"
+                      [data]="PalletDropdown"
+                      formControlName="mstPalletTypeId"
+                      (onSelect)="onPalletSelect($event)">
+                    </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-md-6 col-sm-12">
+                    <label for="parentCategory"> Item </label>
+                    <ng-multiselect-dropdown
+                      [placeholder]="'Select Item'"
+                      [settings]="dropdownSettings"
+                      [data]="ItemDropdown"
+                      formControlName="itemId"
+                      (onSelect)="onItemSelect($event)">
+                    </ng-multiselect-dropdown>
+                  </div>
+                </div>
+
+                <div class="row form-group" *ngIf="hideFields">
+                  <div class="col-md-6 col-sm-12">
+                    <label for="parentCategory"> Finish Goods </label>
+                    <ng-multiselect-dropdown
+                      [placeholder]="'Select Finish Goods'"
+                      [settings]="dropdownSettings"
+                      [data]="FinishGoodsDropdown"
+                      formControlName="mstFinishGoodsId"
+                      (onSelect)="onFinishGoodSelect($event)">
+                    </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-md-6 col-sm-12">
+                    <label for="parentCategory"> Parent </label>
+                    <ng-multiselect-dropdown
+                      [placeholder]="'Select Parent'"
+                      [settings]="dropdownSettings"
+                      [data]="ParentDropdown"
+                      formControlName="parentId"
+                      (onSelect)="onParentSelect($event)">
+                    </ng-multiselect-dropdown>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-md-6 col-sm-12">
+                    <label for="name">
+                      <span></span>
+                      Part Number
+                    </label>
+                    <input
+                      placeholder="Part Number"
+                      class="form-control"
+                      formControlName="partNumber"
+                      type="text"
+                      id="partNumber"
+                      readonly />
+                  </div>
+
+                  <div class="col-md-6 col-sm-12">
+                    <label for="name">
+                      <span></span>
+                      Quantity
+                    </label>
+                    <input
+                      placeholder="Enter Quantity"
+                      class="form-control"
+                      formControlName="quantity"
+                      type="text"
+                      id="quantity" />
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-md-6 col-sm-12">
+                    <label for="name">
+                      <span></span>
+                      ROHS(Y/N)
+                    </label>
+                    <input
+                      placeholder="Enter ROHS"
+                      class="form-control"
+                      formControlName="rohs"
+                      type="text"
+                      id="rohs" />
+                  </div>
+                  <div class="col-md-6 col-sm-12">
+                    <label for="parentCategory"> Production Plan </label>
+                    <ng-multiselect-dropdown
+                      [placeholder]="'Select Production Plan'"
+                      [settings]="ProductionDropdownSettings"
+                      [data]="ProductionPlanDropdown"
+                      formControlName="productionPlanId"
+                      (onSelect)="onProductionPlanSelect($event)">
+                    </ng-multiselect-dropdown>
+                  </div>
+                </div>
+           
+                <app-sharedlocation
+                  [locationSetting]="location"
+                  [FormInvalid]="FormInvalid"
+                  [warehouseId]="upsertForm.controls.currentWareHouseId.value"
+                  [asnreceiveId]="isEdit"
+                  [subInventoryId]="
+                    upsertForm.controls.currentSubInventoryId.value
+                  "
+                  [warehouseLocationId]="
+                    upsertForm.controls.currentWareHouseLocationId.value
+                  "
+                  [warehouseSubLocationId]="
+                    upsertForm.controls.currentWareHouseSubLocationId.value
+                  "
+                  (locationOutput)="locationData($event)"></app-sharedlocation>
+
+                <div class="row form-group">
+                  <div class="col-md-12 col-sm-12">
+                    <label for=""> Description </label>
+                    <textarea
+                      rows="4"
+                      class="w-100 form-control"
+                      [placeholder]="'Enter Description'"
+                      formControlName="description"
+                      required></textarea>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-md-6 col-sm-12">
+                    <label class="align-center pointer">
+                      Is Active
+                      <input
+                        class="form-control"
+                        formControlName="isActive"
+                        type="checkbox"
+                        class="checkbox_animated"
+                    /></label>
+                  </div>
+                </div>
+
+                <div class="text-right">
+                  <button
+                    *ngIf="
+                      this.mps.manageDataPermission([
+                        dataPermission.PRODUCTION_CREATE_PALLET_PRINT
+                      ])
+                    "
+                    (click)="print()"
+                    class="erp-btn-small erp-btn-small__print">
+                    <span>Print</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="erp-btn erp-btn__light"
+                    [routerLink]="['/managepallet/ListPallet']">
+                    Discard
+                  </button>
+                  <button
+                    *ngIf="
+                      this.mps.manageDataPermission([
+                        dataPermission.PRODUCTION_CREATE_PALLET_ADD
+                      ])
+                    "
+                    type="submit"
+                    class="erp-btn erp-btn__green">
+                    {{ btnSave }}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2" *ngIf="Id > 0">
+          <a ngbNavLink>Pallet Details</a>
+          <ng-template ngbNavContent>
+            <app-list-semi-finish-goods-pallet-detail
+              [SemiFinishGoodPalletId]="Id"
+              [hideFields]="
+                hideFields
+              "></app-list-semi-finish-goods-pallet-detail>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="3" *ngIf="Id > 0 && ShowItemTransaction">
+          <a ngbNavLink>Item TransactionDetails</a>
+          <ng-template ngbNavContent>
+            <app-item-transaction-details
+              [PalletID]="Id"
+              [PalletIDNumber]="PalletName"></app-item-transaction-details>
+          </ng-template>
+        </li>
+      </ul>
+      <div [ngbNavOutlet]="nav"></div>
+    </div>
+  </div>
+</div>

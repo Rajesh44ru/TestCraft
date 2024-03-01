@@ -1,0 +1,15 @@
+.table-new{
+    border: 1px solid #e7e7e9;
+    width: 100%;
+    border-radius: 7px;
+   
+   table{
+    th{
+        background-color: var(--color-background);
+        text-align: center;
+    }
+    td{
+        text-align: center;
+    }
+   }
+}

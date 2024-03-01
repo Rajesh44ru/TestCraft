@@ -1,0 +1,100 @@
+.error-block{
+    color: red
+    ;
+}
+
+.grid-table
+{
+	display:table;
+}
+.thead
+{
+	display:table-header-group;
+	font-weight:bold;
+	border-bottom: 1px solid black;
+
+    background-color: #f0f8ff;
+}
+.tfoot
+{
+	display:table-header-group;
+	font-weight:bold;
+	border-bottom: 1px solid black;
+    text-align: center;
+}
+.tbody
+{
+	display:table-row-group;
+}
+.tr
+{
+	display: grid;
+    grid-template-columns: 60% 12% 12% 12% 3%;
+}
+.td
+{
+	display:table-cell;
+	padding: 10px 1px 1px 5px;
+}
+// .thead div.tr div.td:last-child{
+//     background-color: #fff;
+// }
+i:hover{
+	cursor: pointer;
+}
+
+input.ng-invalid.ng-touched,select.ng-invalid.ng-touched{
+	border-color: #dc3545;
+}
+
+
+.elementToFadeInAndOut {
+    -webkit-animation: fadeinout 2s linear forwards;
+    animation: fadeinout 2s linear forwards;
+    opacity: 0;
+}
+
+@-webkit-keyframes fadeinout {
+  50% { opacity: 1; }
+}
+
+@keyframes fadeinout {
+  50% { opacity: 1; }
+}
+
+// ngb-datepicker.dropdown-menu {
+//     padding: 0;
+//     transform: none !important;
+// }
+
+::ng-deep .dropdown-menu{
+	transform: none !important; 
+  }
+  
+  
+  .date-picker-custom {
+    position: relative;
+    width: 100%;
+  }
+  .date-picker-custom i{
+    position: absolute;
+    right: 11px;
+    top: 13px;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

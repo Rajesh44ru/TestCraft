@@ -1,0 +1,312 @@
+<div class="container-fluid">
+  <div class="main-layout">
+    <div class="row mb-s">
+      <div class="col-md-6 col-sm-12 align-center-self">
+        <h1>Manage Pallet</h1>
+      </div>
+      <div class="col-md-6 col-sm-12 text-right">
+        <a
+          *ngIf="
+            this.mps.manageDataPermission([
+              dataPermission.PRODUCTION_LIST_PALLET_ADD_NEW
+            ])
+          "
+          type="button"
+          class="erp-btn-small erp-btn-small__add"
+          [routerLink]="['/managepallet/create-pallet']">
+          <span>Add</span>
+        </a>
+        <a
+          *ngIf="
+            this.mps.manageDataPermission([
+              dataPermission.PRODUCTION_LIST_PALLET_SEARCH
+            ])
+          "
+          href="javascript:void(0)"
+          (click)="showHideFilter()"
+          class="erp-btn-small erp-btn-small__filter">
+          <span>Filter</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="box-content-main" *ngIf="showFilters">
+      <div class="row ">
+        <div class="col-md-6 col-sm-12">
+          <label for="">Search</label>
+          <input
+            class="form-control"
+            placeholder="Search Text"
+            id="Product"
+            type="text"
+            required=""
+            [(ngModel)]="queryObject.searchString"
+            (keyup.enter)="Search()" />
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <label>Is Verified</label>
+          <div class="erpselect">
+            <select class="form-select" [(ngModel)]="queryObject.isVerified">
+              <option value="null">Select</option>
+              <option value="true">True</option>
+              <option value="false">False</option>
+            </select>
+          </div>
+        </div>
+      </div>
+       <div class="row  mt-2">
+        <div class="col-md-6 col-sm-12">
+          <label>WorkOrder Number</label>
+          <div class="erp-select">
+            <select
+              class="form-control form-select"
+              [(ngModel)]="queryObject.productionPlanId">
+              <option value="0">Select Work Order</option>
+              <option *ngFor="let Item of ProdList" [value]="Item.id">
+                {{ Item.workOrderNumber }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <label>Pallet Type</label>
+          <div class="erp-select">
+            <select 
+              class="form-control form-select" disabled
+              [(ngModel)]="queryObject.mstPalletTypeId">
+              <option value="0">Select PalletType</option>
+              <option *ngFor="let Item of PalletTypeDropdown" [value]="Item.id">
+                {{ Item.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+       </div>
+
+       <div class="row mt-2">
+        <div class="col-9"></div>
+        <div class="col-md-3 col-sm-12 pr-0 justify-content-end">
+          <label for="">Action</label>
+          <a (click)="Search()" class="erp-btn erp-btn__green">
+            <span>Search</span>
+          </a>
+          <a (click)="Reset()" class="erp-btn erp-btn__light">
+            <span>Reset</span>
+          </a>
+        </div>
+       </div>
+      
+    </div>
+    <div class="box-content-main-export">
+      <div
+        *ngIf="
+          this.mps.manageDataPermission([
+            dataPermission.PRODUCTION_LIST_PALLET_EXPORT_TO_EXCEL
+          ])
+        "
+        ngbDropdown
+        ngbDropdownToggle
+        role="group"
+        aria-label="Button group with nested dropdown"
+        class="erp-btn-small erp-btn-small__excel">
+        <span>Export Excel</span>
+
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <button class="btn" ngbDropdownItem (click)="exportToExcel(false)">
+            Current Page
+          </button>
+          <button class="btn" ngbDropdownItem (click)="exportToExcel(true)">
+            All Page
+          </button>
+        </div>
+      </div>
+
+      <div
+        *ngIf="
+          this.mps.manageDataPermission([
+            dataPermission.PRODUCTION_LIST_PALLET_EXPORT_TO_PDF
+          ])
+        "
+        ngbDropdown
+        ngbDropdownToggle
+        role="group"
+        aria-label="Button group with nested dropdown"
+        class="erp-btn-small erp-btn-small__pdf">
+        <span>Export Pdf</span>
+
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <button class="btn" ngbDropdownItem (click)="exportToPdf(false)">
+            Current Page
+          </button>
+          <button class="btn" ngbDropdownItem (click)="exportToPdf(true)">
+            All Page
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="box-content-main">
+      <div class="table-responsive mb-s">
+        <table class="table-data table-last-child">
+          <thead>
+            <tr>
+              <!-- <th
+                *ngFor="let c of columns"
+                class="{{ c.isFixed ? 'fixed-side' : '' }}"> -->
+              <th *ngFor="let c of columns" class="fixed-side">
+                <div *ngIf="c.isSortable" (click)="sortBy(c.key)">
+                  {{ c.title }}
+                  <i
+                    *ngIf="queryObject.sortBy === c.key"
+                    class="fa"
+                    [class.fa-sort-asc]="queryObject.isSortAsc"
+                    [class.fa-sort-desc]="!queryObject.isSortAsc"></i>
+                </div>
+                <div *ngIf="!c.isSortable">
+                  {{ c.title }}
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody *ngIf="ManagePallet?.length; else no_data_temp">
+            <tr *ngFor="let pallet of ManagePallet; let i = index">
+              <td class="fixed-side">{{ 1 + i }}</td>
+              <td>
+                <a
+                  class="pallet_link"
+                  style="cursor: pointer"
+                  (click)="Render(pallet.id)"
+                  >{{ pallet.palletId }}</a
+                >
+                <!-- <span>{{ pallet.palletId }}</span> -->
+              </td>
+              <td
+                *ngIf="
+                  pallet.palletIdBarcodeUrl != null &&
+                  pallet.palletIdBarcodeUrl != ''
+                ">
+                <img
+                  style="height: 20px"
+                  src="{{ this.imageUrl + pallet.palletIdBarcodeUrl }}" />
+              </td>
+              <td
+                class="fixed-side"
+                *ngIf="
+                  pallet.palletIdBarcodeUrl == null ||
+                  pallet.palletIdBarcodeUrl == ''
+                ">
+                <button
+                  class="erp-btn-small"
+                  (click)="generateBarcode(pallet.id)">
+                  Generate
+                </button>
+              </td>
+              <td>{{ pallet.partNumber }}</td>
+              <td>
+                <p [innerHTML]="pallet.description"></p>
+              </td>
+              <td>{{pallet.workOrderNumber}}</td>
+              <td>{{ pallet.rohs }}</td>
+              <td>{{ pallet.isVerified }}</td>
+              <td>{{ pallet.qrCode }}</td>
+              <td>{{ pallet.serialNos }}</td>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  class="checkbox_animated mr-0"
+                  id="cbStatus{{ pallet.id }}"
+                  [checked]="pallet.isActive"
+                  #cbStatus />
+              </td>
+              <td>
+                <div class="action-btn">
+                  <a
+                    *ngIf="
+                      this.mps.manageDataPermission([
+                        dataPermission.PRODUCTION_LIST_PALLET_EDIT
+                      ])
+                    "
+                    (click)="onedit(pallet.id)"
+                    ngbTooltip="Edit Pallet">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <a
+                    *ngIf="
+                      this.mps.manageDataPermission([
+                        dataPermission.PRODUCTION_LIST_PALLET_DELETE
+                      ])
+                    "
+                    (click)="delete(pallet.id)"
+                    class="color-danger">
+                    <i class="fa fa-trash-o"></i>
+                  </a>
+                  <a
+                    class="edit"
+                    *ngIf="
+                      this.mps.manageDataPermission([
+                        dataPermission.PRODUCTION_LIST_PALLET_VIEW
+                      ])
+                    "
+                    ngbTooltip="View Pallet">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <ng-template #no_data_temp>
+            <tbody>
+              <td colspan="8" class="no-data">
+                {{ this.noDataFound }}
+              </td>
+            </tbody>
+          </ng-template>
+        </table>
+      </div>
+
+      <div class="">
+        <div class="row erp-pagination">
+          <div class="col-md-7 col-sm-12">
+            <ngb-pagination
+              [collectionSize]="queryObject.pageCount"
+              [pageSize]="queryObject.pageSize"
+              [maxSize]="5"
+              [page]="queryObject.page"
+              (pageChange)="onPageChange($event)"
+              aria-label="Default pagination">
+            </ngb-pagination>
+          </div>
+          <div class="col-md-3 col-sm-12">
+            <div class="No-of-items" *ngIf="ManagePallet?.length">
+              <span
+                >Showing
+                {{
+                  queryObject.page == 1
+                    ? queryObject.page
+                    : (queryObject.page - 1) * queryObject.pageSize + 1
+                }}
+                to {{ queryObject.page * queryObject.pageSize }} of
+                {{ queryObject.pageCount }} entries</span
+              >
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-12 ps-0">
+            <div class="No-of-items">
+              <span>Show </span>
+              <select
+                (change)="changePageSize($event)"
+                [(ngModel)]="queryObject.pageSize"
+                id="pageSize">
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+              </select>
+              <span class="last-text">Entries</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

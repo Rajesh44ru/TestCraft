@@ -1,0 +1,268 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+  <div class="card">
+    <div
+      class="card-header d-flex justify-content-between"
+      style="padding: 15px 30px !important; border-bottom: 1px solid #ddd">
+      <h5>View BOM</h5>
+      <a
+        class="btn btn-primary btn-md"
+        href="#"
+        [routerLink]="['/ManageBom/list-bom']"
+        >Back</a
+      >
+    </div>
+    <div class="card-body tab2-card">
+      <ul
+        ngbNav
+        #nav="ngbNav"
+        class="nav-tabs tab-coupon"
+        (tabChange)="tabchange($event)">
+        <li [ngbNavItem]="1">
+          <a ngbNavLink>Details</a>
+          <ng-template ngbNavContent>
+            <form
+              [formGroup]="BomForm"
+              (ngSubmit)="onSubmit()"
+              class="needs-validation"
+              novalidate="">
+              <div
+                class="form-group row"
+                style="margin: 10px 0px; padding: 0px">
+                <label for="name" class="col-xl-3 col-lg-3 col-md-3"
+                  ><span></span>Model</label
+                >
+                <div class="col-xs-9 col-lg-9 col-md-9">
+                  <input
+                    class="form-control"
+                    formControlName="model"
+                    type="text"
+                    id="model" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.model.valid &&
+                      BomForm.controls.model.touched
+                    "
+                    class="error-block"
+                    >Please Provide Model</span
+                  >
+                </div>
+              </div>
+              <div
+                class="form-group row"
+                style="margin: 10px 0px; padding: 0px">
+                <label for="name" class="col-xl-3 col-lg-3 col-md-3"
+                  ><span></span>Part Number</label
+                >
+                <div class="col-xs-9 col-lg-9 col-md-9">
+                  <input
+                    class="form-control"
+                    formControlName="productPartNumber"
+                    type="text"
+                    id="productPartNumber" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.productPartNumber.valid &&
+                      BomForm.controls.productPartNumber.touched
+                    "
+                    class="error-block"
+                    >Please Part Number
+                  </span>
+                </div>
+              </div>
+              <div
+                class="form-group row"
+                style="margin: 10px 0px; padding: 0px">
+                <label for="name" class="col-xl-3 col-lg-3 col-md-3"
+                  ><span></span>ECN Number</label
+                >
+                <div class="col-xs-9 col-lg-9 col-md-9">
+                  <input
+                    class="form-control"
+                    formControlName="ecnNumber"
+                    type="text"
+                    id="ecnNumber" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.ecnNumber.valid &&
+                      BomForm.controls.ecnNumber.touched
+                    "
+                    class="error-block"
+                    >Please Provide Ecn Number</span
+                  >
+                </div>
+              </div>
+              <div
+                class="form-group row editor-label"
+                style="margin: 10px 0px; padding: 0px">
+                <label class="col-xl-3 col-lg-3 col-md-3 my-auto"
+                  >Effective From
+                </label>
+                <div class="col-xl-9 col-md-8">
+                  <div class="input-group">
+                    <input
+                      class="form-control"
+                      placeholder="yyyy-mm-dd"
+                      type="date"
+                      formControlName="effectiveFrom" />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-group row"
+                style="margin: 10px 0px; padding: 0px">
+                <label for="name" class="col-xl-3 col-lg-3 col-md-3"
+                  ><span></span>Remarks</label
+                >
+                <div class="col-xs-9 col-lg-9 col-md-9">
+                  <input
+                    class="form-control"
+                    formControlName="remarks"
+                    type="text"
+                    id="remarks" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.remarks.valid &&
+                      BomForm.controls.remarks.touched
+                    "
+                    class="error-block"
+                    >Please Provide Remarks</span
+                  >
+                </div>
+              </div>
+              <div
+                class="form-group row"
+                style="margin: 10px 0px; padding: 0px">
+                <label for="name" class="col-xl-3 col-lg-3 col-md-3"
+                  ><span></span>Revision Number</label
+                >
+                <div class="col-xs-9 col-lg-9 col-md-9">
+                  <input
+                    class="form-control"
+                    formControlName="revisionNumber"
+                    type="number"
+                    id="revisionNumber" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.revisionNumber.valid &&
+                      BomForm.controls.revisionNumber.touched
+                    "
+                    class="error-block"
+                    >Please provide Revision Number
+                  </span>
+                </div>
+              </div>
+              <div
+                class="form-group row"
+                style="margin: 10px 0px; padding: 0px">
+                <label for="name" class="col-xl-3 col-lg-3 col-md-3"
+                  ><span></span>Sub Revision Number</label
+                >
+                <div class="col-xs-9 col-lg-9 col-md-9">
+                  <input
+                    class="form-control"
+                    formControlName="subRevisionNumber"
+                    type="number"
+                    id="subRevisionNumber" />
+                  <span
+                    *ngIf="
+                      !BomForm.controls.subRevisionNumber.valid &&
+                      BomForm.controls.subRevisionNumber.touched
+                    "
+                    class="error-block"
+                    >Please provide Sub Revision Number
+                  </span>
+                </div>
+              </div>
+              <div class="form-group row editor-label">
+                <label class="col-xl-3 col-md-4"> Is Active </label>
+                <div class="col-xl-9 col-md-8">
+                  <input
+                    class="form-control"
+                    formControlName="isActive"
+                    type="checkbox"
+                    class="checkbox_animated" />
+                </div>
+              </div>
+
+              <div
+                class="form-group row"
+                style="margin: 10px 0px; padding: 0px">
+                <label
+                  for="parentCategory"
+                  class="col-xl-3 col-md-4"
+                  style="padding: 0px"
+                  >Project <span>*</span></label
+                >
+                <div
+                  class="col-xl-9 col-md-8"
+                  style="padding-right: 0; padding-left: 9px">
+                  <select class="form-control" formControlName="mstProjectId">
+                    <option value="">------Select Project----</option>
+                    <option
+                      *ngFor="let items of ProjectList"
+                      [ngValue]="items.id">
+                      {{ items.name }}
+                    </option>
+                  </select>
+                  <span
+                    *ngIf="
+                      BomForm.controls.mstProjectId.touched &&
+                      BomForm.controls.mstProjectId.errors?.required
+                    "
+                    class="text text-danger"
+                    >Project is Required .</span
+                  >
+                </div>
+              </div>
+              <div
+                class="form-group row"
+                style="margin: 10px 0px; padding: 0px">
+                <label
+                  for="parentCategory"
+                  class="col-xl-3 col-md-4"
+                  style="padding: 0px"
+                  >FinishGoods <span>*</span></label
+                >
+                <div
+                  class="col-xl-9 col-md-8"
+                  style="padding-right: 0; padding-left: 9px">
+                  <select
+                    class="form-control"
+                    formControlName="mstFinishGoodsId">
+                    <option value="">------Select Finish Goods----</option>
+                    <option
+                      *ngFor="let items of FinishGoodsList"
+                      [ngValue]="items.id">
+                      {{ items.name }}
+                    </option>
+                  </select>
+                  <span
+                    *ngIf="
+                      BomForm.controls.mstFinishGoodsId.touched &&
+                      BomForm.controls.mstFinishGoodsId.errors?.required
+                    "
+                    class="text text-danger"
+                    >Finish Goods is Required .</span
+                  >
+                </div>
+              </div>
+              <!-- <div class="pull-right">
+                               <button type="button" class="btn btn-primary mr-2" [routerLink]="['/ManageBom/list-bom']">
+                                  Discard
+                               </button>
+                               <button type="submit" class="btn btn-success"> Save</button>
+                            </div> -->
+            </form>
+          </ng-template>
+        </li>
+        <!-- <li [ngbNavItem]="2">
+                    <a ngbNavLink>Software</a>
+                    <ng-template ngbNavContent>
+                    </ng-template>
+                </li> -->
+      </ul>
+      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    </div>
+  </div>
+</div>

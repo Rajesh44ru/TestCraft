@@ -1,0 +1,300 @@
+<div class="container-fluid">
+  <div class="main-layout">
+    <div class="row mb-s">
+      <div class="col-md-6 col-sm-12 align-center-self">
+        <h1>BOM List </h1>
+      </div>
+      <div class="col-md-6 col-sm-12 text-right">
+        <button
+        *ngIf="
+        this.mps.manageDataPermission([
+          dataPermission.PRODUCTION_BOMS_ADD_NEW
+        ])
+      "
+          type="button"
+          class="erp-btn-small erp-btn-small__add"
+          [routerLink]="['/ManageBom/create-bom']">
+          <span>Add</span>
+        </button>
+        <a
+        *ngIf="
+        this.mps.manageDataPermission([
+          dataPermission.PRODUCTION_BOMS_SEARCH
+        ])
+      "
+          href="javascript:void(0)"
+          (click)="showHideFilter()"
+          class="erp-btn-small erp-btn-small__filter">
+          <span>Filter</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="box-content-main" *ngIf="showFilters">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <label for="">Search</label>
+          <input
+            class="form-control"
+            placeholder="Search Text"
+            id="bom"
+            type="text"
+            required=""
+            [(ngModel)]="queryObject.searchString"
+            (keyup.enter)="Search()" />
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <label>Action</label>
+          <a type="button" class="erp-btn erp-btn__green" (click)="Search()">
+            <span>Search</span>
+          </a>
+          <a type="button" class="erp-btn erp-btn__light" (click)="Reset()">
+            <span>Reset</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="box-content-main-export">
+      <div
+      *ngIf="
+      this.mps.manageDataPermission([
+        dataPermission.PRODUCTION_BOMS_EXPORT_TO_EXCEL
+      ])
+    "
+        ngbDropdown
+        ngbDropdownToggle
+        role="group"
+        aria-label="Button group with nested dropdown"
+        class="erp-btn-small erp-btn-small__excel">
+        <span>Export Excel</span>
+
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <button class="btn" ngbDropdownItem (click)="exportToExcel(false)">
+            Current Page
+          </button>
+          <button class="btn" ngbDropdownItem (click)="exportToExcel(true)">
+            All Page
+          </button>
+        </div>
+      </div>
+
+      <div
+      *ngIf="
+      this.mps.manageDataPermission([
+        dataPermission.PRODUCTION_BOMS_EXPORT_TO_PDF
+      ])
+    "
+        ngbDropdown
+        ngbDropdownToggle
+        role="group"
+        aria-label="Button group with nested dropdown"
+        class="erp-btn-small erp-btn-small__pdf">
+        <span>Export Pdf</span>
+
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <button class="btn" ngbDropdownItem (click)="exportToPdf(false)">
+            Current Page
+          </button>
+          <button class="btn" ngbDropdownItem (click)="exportToPdf(true)">
+            All Page
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="box-content-main">
+      <div class="table-responsive mb-s">
+        <table class="table-data table-last-child">
+          <thead>
+            <tr>
+              <th *ngFor="let c of columns">
+                <div *ngIf="c.isSortable" (click)="sortBy(c.key)">
+                  {{ c.title }}
+                  <i
+                    *ngIf="queryObject.sortBy === c.key"
+                    class="fa"
+                    [class.fa-sort-asc]="queryObject.isSortAsc"
+                    [class.fa-sort-desc]="!queryObject.isSortAsc"></i>
+                </div>
+                <div *ngIf="!c.isSortable">
+                  {{ c.title }}
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody *ngIf="BOmList?.length; else no_data_temp">
+            <ng-container *ngFor="let item of BOmList; let idx = index">
+              <tr>
+                <td>
+                  {{ item.name }}
+                </td>
+                <td>
+                  {{ item.model }}
+                </td>
+                <td>
+                  {{ item.productPartNumber }}
+                </td>
+                <td>
+                  {{ item.ecnNumber }}
+                </td>
+                <td>
+                  {{item.version}}
+                </td>
+                <td>
+                  {{ item.effectiveFrom | date : "medium" }}
+                </td>
+                <td>
+                  <div class="action-btn">
+                    <a
+                    *ngIf="
+                    this.mps.manageDataPermission([
+                      dataPermission.PRODUCTION_BOMS_EDIT
+                    ])
+                  "
+                      (click)="onEditBOm(item.id)"
+                      ngbTooltip="Edit BOM List"
+                      class="mx-auto">
+                      <i class="fa fa-edit"> </i>
+                    </a>
+                    <a style="margin-left: 8px" (click)="expandchildBom(item)">
+
+                      <i *ngIf="item['IsExpand']==true" class="fa fa-angle-double-up"style="
+                      font-size: 20px;
+                      color: rgb(10, 2, 116);
+                      cursor: pointer;
+                    ">
+                    </i>
+                      <i *ngIf="item['IsExpand']!=true" class="fa fa-angle-double-down" style="
+                      font-size: 20px;
+                      color: rgb(10, 2, 116);
+                      cursor: pointer;
+                    "></i>
+                      <i></i>
+                    </a>
+                  </div>
+                </td>
+                <!-- <td>
+                                        <i (click)="OnDelete(item.id)" class="fa fa-trash" style="color: red; font-size: 20px; margin-left: 8px;">
+                                        </i>
+                                    </td> -->
+              </tr>
+              
+              <tr *ngIf="item['IsExpand']==true ">
+                <td colspan="8">
+                  <div class="table-new">
+                <table class="table-data table-last-child">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let c of columns">
+                        <div *ngIf="c.isSortable" (click)="sortBy(c.key)">
+                          {{ c.title }}
+                          <i
+                            *ngIf="queryObject.sortBy === c.key"
+                            class="fa"
+                            [class.fa-sort-asc]="queryObject.isSortAsc"
+                            [class.fa-sort-desc]="!queryObject.isSortAsc"></i>
+                        </div>
+                        <div *ngIf="!c.isSortable">
+                          {{ c.title }}
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="item.childBom?.length; else no_data_temp">
+                    <tr *ngFor="let items of item.childBom; let idx = index">
+                      <td>
+                        {{ item.name }}
+                      </td>
+                      <td>
+                        {{ items.model }}
+                      </td>
+                      <td>
+                        {{ items.productPartNumber }}
+                      </td>
+                      <td>
+                        {{ items.ecnNumber }}
+                      </td>
+                      <td>
+                       {{"v"+items.revisionNumber + "."+ items.subRevisionNumber}}
+                      </td>
+                      <td>
+                        {{ items.effectiveFrom | date : "medium" }}
+                      </td>
+                      <td>
+                        <div class="action-btn">
+                          <a
+                          *ngIf="
+                          this.mps.manageDataPermission([
+                            dataPermission.PRODUCTION_BOMS_EDIT
+                          ])
+                        "
+                            (click)="onEditBOm(items.id)"
+                            ngbTooltip="Edit BOM List"
+                            class="mx-auto">
+                            <i class="fa fa-edit"> </i>
+                          </a>
+                        </div>
+                      </td>
+                      <!-- <td>
+                                              <i (click)="OnDelete(item.id)" class="fa fa-trash" style="color: red; font-size: 20px; margin-left: 8px;">
+                                              </i>
+                                          </td> -->
+                    </tr>
+                    <tr>
+                      
+                    </tr>
+                  </tbody>
+                  <ng-template #no_data_temp>
+                    <tbody>
+                      <td colspan="6" class="no-data">
+                        {{ this.noDataFound }}
+                      </td>
+                    </tbody>
+                  </ng-template>
+                </table>
+                  </div>
+                  </td>
+              </tr>
+            </ng-container>
+          </tbody>
+          <ng-template #no_data_temp>
+            <tbody>
+              <td colspan="6" class="no-data">
+                {{ this.noDataFound }}
+              </td>
+            </tbody>
+          </ng-template>
+        </table>
+      </div>
+
+      <div class="">
+        <div class="row erp-pagination">
+          <div class="col-md-7 col-sm-12">
+            <ngb-pagination [collectionSize]="queryObject.pageCount" [pageSize]="queryObject.pageSize" [maxSize]="5"
+              [page]="queryObject.page" (pageChange)="onPageChange($event)" aria-label="Default pagination">
+            </ngb-pagination>
+          </div>
+          <div class="col-md-3 col-sm-12">
+            <div class="No-of-items" *ngIf="BOmList?.length"><span>Showing
+                {{queryObject.page==1?queryObject.page:(queryObject.page-1)*queryObject.pageSize+1}} to
+                {{queryObject.page*queryObject.pageSize}} of
+                {{queryObject.pageCount}} entries</span></div>
+          </div>
+          <div class="col-md-2 col-sm-12 ps-0">
+            <div class="No-of-items">
+              <span>Show </span>
+              <select (change)="changePageSize($event)" [(ngModel)]="queryObject.pageSize" id="pageSize">
+                <option [value]="10">10 </option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+              </select>
+              <span class="last-text">Entries</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,258 @@
+<div class="container-fluid">
+  <div class="main-layout">
+    <div class="row mb-s">
+      <div class="col-md-12 col-sm-12 align-center-self">
+        <h1>Generate Pallet</h1>
+      </div>
+    </div>
+
+    <div class="box-content-main">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <label for="">Work Order Number</label>
+          <input
+            class="form-control"
+            (keypress)="keypressevent($event)"
+            [(ngModel)]="workOrderNumber"
+            type="text"
+            id="worksheet" />
+        </div>
+
+        <div class="col-md-6 col-sm-12 pr-0">
+          <label for="">Action</label>
+          <a
+            *ngIf="
+              this.mps.manageDataPermission([
+                dataPermission.PRODUCTION_GENERATE_PALLET_GENERATE
+              ])
+            "
+            (click)="submit()"
+            class="erp-btn erp-btn__green">
+            <span>Submit</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div *ngIf="SerailNumberDataList.length > 0">
+        <div class="box-content-main">
+          <div class="table-responsive mb-s">
+            <table class="table-data">
+              <thead>
+                <tr>
+                  <th>Serial Number</th>
+                  <th class="text-center" width="100">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of SerailNumberDataList; let idx = index">
+                  <td>
+                    {{ item }}
+                  </td>
+                  <td>
+                    <div class="action-btn">
+                      <a
+                        class="color-danger mx-auto"
+                        (click)="OnDeleteSerial(idx)">
+                        <i class="fa fa-times-circle"> </i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 col-sm-12 text-right">
+              <button (click)="GeneratePallet()" class="erp-btn erp-btn__green">
+                Generate
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="Data?.length">
+        <div class="box-content-main">
+          <div class="form-group row mb-3">
+            <div *ngIf="!showGenerate" class="col-md-6 col-sm-12">
+              <label *ngIf="!showGenerate" for="worksheet">Serial Number</label>
+              <input
+                class="form-control"
+                (keypress)="keyEventInput($event)"
+                [(ngModel)]="SerialNumber"
+                type="text"
+                id="serialNumber" />
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <label for="">Action</label>
+              <button
+                *ngIf="!showGenerate"
+                (click)="submitSerailInput()"
+                class="erp-btn erp-btn__green">
+                Submit
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-sm-12">
+              <div *ngIf="GeneratedSerialList?.length > 0">
+                <div class="">
+                  <div class="table-responsive mb-s">
+                    <table class="table-data">
+                      <thead>
+                        <tr>
+                          <th *ngFor="let c of columns">
+                            <span *ngIf="!c.isSortable">
+                              {{ c.title }}
+                            </span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody
+                        *ngIf="
+                          GeneratedSerialList?.length > 0;
+                          else no_data_temp
+                        ">
+                        <tr
+                          [class]="
+                            item.isExistPallet == true ? 'color-success' : ''
+                          "
+                          *ngFor="
+                            let item of GeneratedSerialList;
+                            let idx = index
+                          ">
+                          <td *ngIf="item.isExistPallet == true" width="50%">
+                            <a class="pallet_link" (click)="Render(item)">{{
+                              item.palletId
+                            }}</a>
+                          </td>
+                          <td *ngIf="item.isExistPallet == false" width="50%">
+                            {{ nullstring }}
+                          </td>
+                          <td>
+                            <div class="d-flex">
+                              <div
+                                *ngFor="
+                                  let items of item.listData;
+                                  let i = index
+                                ">
+                                <span *ngIf="i < item.listData.length - 1"
+                                  >{{ items.serialNumber }},</span
+                                >
+                                <span *ngIf="i == item.listData.length - 1">{{
+                                  items.serialNumber
+                                }}</span>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <ng-template #no_data_temp>
+                        <tbody>
+                          <td colspan="2" class="no-data">
+                            {{ this.noDataFound }}
+                          </td>
+                        </tbody>
+                      </ng-template>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-12 pr-0">
+              <div *ngIf="nonGeneratedSerialList?.length > 0">
+                <div class="table-responsive mb-s">
+                  <table class="table-data">
+                    <thead>
+                      <tr>
+                        <th>
+                          <span> Remaing SerialNumbers </span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      *ngIf="
+                        nonGeneratedSerialList?.length > 0 &&
+                          nonGeneratedSerialList[0].listData.length > 0;
+                        else no_data_temp
+                      ">
+                      <tr
+                        *ngFor="
+                          let items of nonGeneratedSerialList[0].listData;
+                          let idx = index
+                        ">
+                        <td class="text-left">
+                          <span>{{ items.serialNumber }}</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <ng-template #no_data_temp>
+                      <tbody>
+                        <td class="no-data">
+                          {{ this.noDataFound }}
+                        </td>
+                      </tbody>
+                    </ng-template>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div *ngIf="Data?.length">
+        <div class="box-content-main">
+          <div *ngIf="nonGeneratedSerialList?.length > 0">
+            <div class="table-responsive">
+              <div class="table-responsive mb-s">
+                <table class="table-data">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let c of columns">
+                        <span *ngIf="!c.isSortable">
+                          {{ c.title }}
+                        </span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="nonGeneratedSerialList?.length > 0; else no_data_temp">
+                    <tr [class]="
+                        item.isExistPallet == true ? 'color-success' : ''
+                      " *ngFor="let item of nonGeneratedSerialList; let idx = index">
+                      <td *ngIf="item.isExistPallet == true" width="50%">
+                        <a class="pallet_link" (click)="Render(item)">{{
+                          item.palletId
+                          }}</a>
+                      </td>
+                      <td *ngIf="item.isExistPallet == false" width="50%">
+                        {{ nullstring }}
+                      </td>
+                      <td>
+                        <div class="d-flex">
+                          <div *ngFor="let items of item.listData; let i = index">
+                            <span *ngIf="i < item.listData.length - 1">{{ items.serialNumber }},</span>
+                            <span *ngIf="i == item.listData.length - 1">{{
+                              items.serialNumber
+                              }}</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <ng-template #no_data_temp>
+                    <tbody>
+                      <td colspan="6" class="no-data">
+                        {{ this.noDataFound }}
+                      </td>
+                    </tbody>
+                  </ng-template>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>

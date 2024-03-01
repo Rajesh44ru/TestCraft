@@ -1,0 +1,188 @@
+<div class="container-fluid">
+    <div class="main-layout">
+      <div class="row mb-s">
+        <div class="col-md-6 col-sm-12 align-center-self">
+          <!-- <h1>Pallet Details</h1> -->
+        </div>
+        <div class="col-md-6 col-sm-12 text-right">
+          <!-- <a
+            type="button"
+            class="erp-btn-small erp-btn-small__add"
+            (click)="createDataPermisionPopUp(0, this.SemiFinishGoodPalletId)"
+          >
+            <span>Add</span>
+          </a> -->
+          <a
+            href="javascript:void(0)"
+            (click)="showHideFilter()"
+            class="erp-btn-small erp-btn-small__filter"
+          >
+            <span>Filter</span>
+          </a>
+        </div>
+      </div>
+  
+      <div class="box-content-main" *ngIf="showFilters">
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <label for="">Search</label>
+            <input
+              class="form-control"
+              placeholder="Search Text"
+              id="Product"
+              type="text"
+              required=""
+              [(ngModel)]="queryObject.searchString"
+              (keyup.enter)="Search()"
+            />
+          </div>
+  
+          <div class="col-md-6 col-sm-12 pr-0">
+            <label for="">Action</label>
+            <a (click)="Search()" class="erp-btn erp-btn__green">
+              <span>Search</span>
+            </a>
+            <a (click)="Reset()" class="erp-btn erp-btn__light">
+              <span>Reset</span>
+            </a>
+          </div>
+        </div>
+      </div>
+<!--   
+      <div class="box-content-main-export">
+        <div
+          *ngIf="
+            this.mps.manageDataPermission([
+              dataPermission.Item_Requisition_Export_Excel
+            ])
+          "
+          ngbDropdown
+          ngbDropdownToggle
+          role="group"
+          aria-label="Button group with nested dropdown"
+          class="erp-btn-small erp-btn-small__excel"
+        >
+          <span>Export Excel</span>
+  
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <button class="btn">Current Page</button>
+            <button class="btn">All Page</button>
+          </div>
+        </div>
+  
+        <div
+          ngbDropdown
+          ngbDropdownToggle
+          role="group"
+          aria-label="Button group with nested dropdown"
+          class="erp-btn-small erp-btn-small__pdf"
+        >
+          <span>Export Pdf</span>
+  
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <button class="btn">Current Page</button>
+            <button class="btn" ngbDropdownItem>All Page</button>
+          </div>
+        </div>
+      </div> -->
+  
+      <div class="box-content-main">
+        <div class="table-responsive mb-s">
+          <table class="table-data table-last-child">
+            <thead>
+              <tr>
+                <th *ngFor="let c of columns">
+                  <div *ngIf="c.isSortable" (click)="sortBy(c.key)">
+                    {{ c.title }}
+                    <i
+                      *ngIf="queryObject.sortBy === c.key"
+                      class="fa"
+                      [class.fa-sort-asc]="queryObject.isSortAsc"
+                      [class.fa-sort-desc]="!queryObject.isSortAsc"
+                    ></i>
+                  </div>
+                  <div *ngIf="!c.isSortable">
+                    {{ c.title }}
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody *ngIf="dataList?.length; else no_data_temp">
+              <tr *ngFor="let data of dataList; let i = index">
+                <td>{{ 1 + i }}</td>
+                <td>{{data.semiFinishGoodsPalletId}}</td>
+                <td>{{data.semiFinishGoodsId}}</td>
+                <td>{{data.serialNumber}}</td>
+                <td>{{data.remarks}}</td>
+  
+                <td class="text-center">
+                  <input
+                    type="checkbox"
+                    class="checkbox_animated mr-0"
+                    id="cbStatus{{ data.id }}"
+                    [checked]="data.isActive"
+                    #cbStatus
+                  />
+                </td>
+                <td>
+                  <div class="action-btn">
+                    <a
+                      class="edit"
+                      (click)="
+                      createDataPermisionPopUp(data.id, this.SemiFinishGoodPalletId)
+                    "
+                      ngbTooltip="Edit Finish Goods"
+                    >
+                      <i class="fa fa-edit"></i>
+                    </a>
+                    <a (click)="delete(data.id)" class="color-danger">
+                      <i class="fa fa-trash-o"></i>
+                    </a>
+                    <a ngbTooltip="View Finish Goods">
+                      <i class="fa fa-eye" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <ng-template #no_data_temp>
+              <tbody>
+                <td colspan="8" class="no-data">
+                  {{ this.noDataFound }}
+                </td>
+              </tbody>
+            </ng-template>
+          </table>
+        </div>
+  
+        <div class="">
+          <div class="row erp-pagination">
+            <div class="col-md-7 col-sm-12">
+              <ngb-pagination [collectionSize]="queryObject.pageCount" [pageSize]="queryObject.pageSize" [maxSize]="5"
+                [page]="queryObject.page" (pageChange)="onPageChange($event)" aria-label="Default pagination">
+              </ngb-pagination>
+            </div>
+            <div class="col-md-3 col-sm-12">
+              <div class="No-of-items" *ngIf="dataList?.length"><span>Showing
+                  {{queryObject.page==1?queryObject.page:(queryObject.page-1)*queryObject.pageSize+1}} to
+                  {{queryObject.page*queryObject.pageSize}} of
+                  {{queryObject.pageCount}} entries</span></div>
+            </div>
+            <div class="col-md-2 col-sm-12 ps-0">
+              <div class="No-of-items">
+                <span>Show </span>
+                <select (change)="changePageSize($event)" [(ngModel)]="queryObject.pageSize" id="pageSize">
+                  <option [value]="10">10 </option>
+                  <option [value]="20">20</option>
+                  <option [value]="50">50</option>
+                  <option [value]="100">100</option>
+                </select>
+                <span class="last-text">Entries</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
