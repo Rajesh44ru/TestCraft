@@ -1,14 +1,23 @@
-GIt From CLone
+#GIt From CLone
   git clone url
   git status
   git add <FileName>
   git commit -m "Message"
   git push origin main
 
-GIt CLone From Local
+#GIt CLone From Local
   git init
-   git remote add orgin <link>
+  git remote add orgin <link>
   git remote -v  (To verify branch)
   git branch  (To check Branch)
   git branch -m main
   git push origin main
+  
+  Git push origin feature( branch Name)
+
+#GIT To Merge baranch
+  Way 1
+   git diff <branchname> ( tom compare commits,files and branchs)
+   git merge <branchname>
+
+
